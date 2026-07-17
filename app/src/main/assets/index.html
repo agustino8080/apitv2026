@@ -1834,20 +1834,32 @@
     var files = Array.from(e.target.files || []);
     if (!files.length) return;
     m3uStatus.textContent = 'Leyendo archivos...';
-    var readers = files.map(function(file){
-      return file.text().then(function(text){
+
+    var processedCount = 0;
+    var totalChannelsFound = 0;
+
+    files.forEach(function(file){
+      var reader = new FileReader();
+      reader.onload = function(evt){
+        var text = evt.target.result;
         var chans = parseM3U(text, file.name);
+        totalChannelsFound += chans.length;
         saveListRecord(file.name, 'file', chans);
-        return chans;
-      });
-    });
-    Promise.all(readers).then(function(results){
-      var total = 0;
-      results.forEach(function(chans){ total += chans.length; mergeChannels(chans); });
-      m3uStatus.textContent = files.length + ' archivo(s) procesados, ' + total + ' canales añadidos.';
-      toast(total + ' canales añadidos desde archivo(s).', 'success');
-      activateTab('canales');
-      e.target.value = '';
+        mergeChannels(chans);
+
+        processedCount++;
+        if (processedCount === files.length) {
+            m3uStatus.textContent = files.length + ' archivo(s) procesados, ' + totalChannelsFound + ' canales añadidos.';
+            toast(totalChannelsFound + ' canales añadidos.', 'success');
+            activateTab('canales');
+            e.target.value = '';
+        }
+      };
+      reader.onerror = function() {
+          processedCount++;
+          toast('Error al leer ' + file.name, 'error');
+      };
+      reader.readAsText(file);
     });
   });
 
