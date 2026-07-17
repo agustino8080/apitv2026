@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.apiptv.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.apiptv.app"
+        minSdk 21                 // Android 5.0 — FireTV Gen 1+, Android TV, todos los phones modernos
+        targetSdk 34
+        versionCode 1
+        versionName "2026.1.0"
+
+        // Soporte de arquitecturas: ARM (phones) + x86 (emuladores/algunos TVs)
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Para distribuir sin firmar en modo debug:
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Optimización del APK
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/*.kotlin_module', 'META-INF/DEPENDENCIES']
+        }
+    }
+
+    // FireTV: incluir el HTML como asset sin comprimir para carga rápida
+    aaptOptions {
+        noCompress 'html', 'js', 'css', 'm3u', 'm3u8'
+    }
+}
+
+dependencies {
+    // Forzar versiones de Kotlin para evitar duplicados
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
+
+    // Leanback (Android TV / FireTV UI framework)
+    implementation 'androidx.leanback:leanback:1.0.0'
+
+    // Core Android
+    implementation 'androidx.core:core:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // WebKit (WebView actualizada)
+    implementation 'androidx.webkit:webkit:1.8.0'
+}

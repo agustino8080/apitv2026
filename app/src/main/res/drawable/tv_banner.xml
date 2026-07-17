@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Banner 320x180dp para la pantalla de inicio de Android TV / FireTV -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Fondo degradado oscuro -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#060a14"
+                android:endColor="#0f1626"
+                android:angle="135"/>
+        </shape>
+    </item>
+
+    <!-- Borde azul izquierdo -->
+    <item android:width="6dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#3b6dff"/>
+        </shape>
+    </item>
+
+    <!-- Texto: AP.iptv 2026 -->
+    <item android:gravity="center">
+        <text
+            android:text="AP.iptv 2026"
+            android:textColor="#e6ebf7"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-medium"/>
+    </item>
+
+</layer-list>
